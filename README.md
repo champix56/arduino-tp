@@ -6,10 +6,12 @@ cahier de tp pour le cours arduino
 - arduino uno
 - 1x led
 - 1x push button
-- 2x résistance 1k&ohm;
+- 1x résistance 22k&ohm;
+- 2x résistances 1k&ohm;
 - 1x résistance 6.8k&ohm;
 - 1x résistance 680&ohm;
 - 1x potentiomètre linéaire
+- 1x thermistance *(103)* 1k&ohm;
 
 # Arduino_tp_list
 
@@ -571,7 +573,7 @@ transformation du projet en lecteur de tension (voltmètre) pour une tension max
 utilisation de la loi de Kirchhoff, le pont diviseur de tension.
 
 calculateur en ligne :
-[https://www.digikey.fr/fr/resources/conversion-calculators/conversion-calculator-voltage-divider]([https://link](https://www.digikey.fr/fr/resources/conversion-calculators/conversion-calculator-voltage-divider))
+[https://www.digikey.fr/fr/resources/conversion-calculators/conversion-calculator-voltage-divider](https://www.digikey.fr/fr/resources/conversion-calculators/conversion-calculator-voltage-divider)
 
 ![calcul loi Kirchhoff](img/pont-res.png)
 
@@ -631,5 +633,71 @@ void loop()
 fichier fritzing : *projets/tp5a/projet5a.fzz*
 
 ![projet.fzz](img/projet5-kirchhoff.png)
+
+----------
+
+# projet 5b
+
+sur le modèle du pont de Kirchhoff, il est possible d'acquérir des valeurs depuis n’importe quel sensor résistif linéaire. Ex : LDR (photorésistance), NTC (Thermistance), sensor de flexion, ...
+
+Grâce aux lois régissant l'électronique :
+
+- loi des mailles
+  - la somme des tensions dans une maille est égale à 0v
+  ![aloi des mailles](img/Loi_des_mailles.png)
+- loi des mailles
+  - La somme des intensité entrante en un point est égale a la somme des intensités sortante du même points
+  ![loi des nœuds](img/loi-des-noeuds.png)
+
+- la loi d'ohm avec la formule U = R * I 
+et ses déclinaisons I=U/R &amp; R = U/I
+![loi d'ohm](img/loi-ohm.png)
+
+il est facile déduire la valeur d'une résistance dans un pont diviseur de tension grâce à la tension récupérer
+
+## 5b. Enoncé
+
+- récupérer une valeur de tension au borne d'une résistance.
+- afficher la valeur de la résistance en &ohm;
+
+## 5b.1. Composants
+
+- arduino uno
+- 1x résistance 22k&ohm;
+- 1 résistance &lambda;&ohm; à tester;
+
+## 5b.2. Code
+
+fichier source : *projets/tp5b/tp5b.ino*
+
+~~~c
+#define CANPIN A3
+float R1 = 2200.0F;
+float VIN = 5.0F;
+void setup()
+{
+    Serial.begin(9600);
+}
+void loop()
+{
+    // récupérer la tensions aux bornes de R2
+    int canValue = analogRead(CANPIN);
+    // tension en A3
+    float vOut = canValue * (VIN / 1024);
+    // calcul:
+    // vOut=(R1/(R1+R2)) * VIN
+    // r2=R1 * ( VIN / vOut) -R1
+    float r2 = R1 * (VIN / vOut) - R1;
+    Serial.print("Res : ");
+    Serial.println(r2);
+    delay(1000);
+}
+~~~
+
+## 5b.3. Montage
+
+fichier fritzing : *projets/tp5b/projet5b.fzz*
+
+![ohm mètre](img/projet5b.png)
 
 ----------
