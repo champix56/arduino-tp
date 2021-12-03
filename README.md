@@ -4,6 +4,7 @@ cahier de tp pour le cours arduino
 ## Composants necessaires
 
 - arduino uno
+- 1x led
 
 # Arduino_tp_list
 
