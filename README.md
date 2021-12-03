@@ -571,7 +571,7 @@ transformation du projet en lecteur de tension (voltmètre) pour une tension max
 utilisation de la loi de Kirchhoff, le pont diviseur de tension.
 
 calculateur en ligne :
-[https://www.digikey.fr/fr/resources/conversion-calculators/conversion-calculator-voltage-divider]([https://link](https://www.digikey.fr/fr/resources/conversion-calculators/conversion-calculator-voltage-divider))
+[https://www.digikey.fr/fr/resources/conversion-calculators/conversion-calculator-voltage-divider](https://www.digikey.fr/fr/resources/conversion-calculators/conversion-calculator-voltage-divider)
 
 ![calcul loi Kirchhoff](img/pont-res.png)
 
