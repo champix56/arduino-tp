@@ -258,9 +258,16 @@ fichier fritzing : *projets/tp3/projet3.fzz*
 
 ### 3.4. doc officiel
 
-- **HarwareSerial** [https://www.arduino.cc/reference/en/language/functions/communication/serial/](https://www.arduino.cc/reference/en/language/functions/communication/serial/)
-  - *Serial.begin* [https://www.arduino.cc/reference/en/language/functions/communication/serial/begin/]([https://link](https://www.arduino.cc/reference/en/language/functions/communication/serial/begin/))
-  - *Serial.println* : [https://www.arduino.cc/reference/en/language/functions/communication/serial/println/]([https://link](https://www.arduino.cc/reference/en/language/functions/communication/serial/println/))
-  - *Serial.print* : [https://www.arduino.cc/reference/en/language/functions/communication/serial/print/]([https://link](https://www.arduino.cc/reference/en/language/functions/communication/serial/print/))
+- **HarwareSerial**
+  [https://www.arduino.cc/reference/en/language/functions/communication/serial/](https://www.arduino.cc/reference/en/language/functions/communication/serial/)
+  
+  - *Serial.begin*
+  [https://www.arduino.cc/reference/en/language/functions/communication/serial/begin/](https://www.arduino.cc/reference/en/language/functions/communication/serial/begin/)
+  
+  - *Serial.println*
+  [https://www.arduino.cc/reference/en/language/functions/communication/serial/println/](https://www.arduino.cc/reference/en/language/functions/communication/serial/println/)
+  
+  - *Serial.print*
+  [https://www.arduino.cc/reference/en/language/functions/communication/serial/print/](https://www.arduino.cc/reference/en/language/functions/communication/serial/print/)
 
 ----------
