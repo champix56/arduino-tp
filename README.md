@@ -268,6 +268,6 @@ fichier fritzing : *projets/tp3/projet3.fzz*
   [https://www.arduino.cc/reference/en/language/functions/communication/serial/println/](https://www.arduino.cc/reference/en/language/functions/communication/serial/println/)
   
   - *Serial.print*
-  - [https://www.arduino.cc/reference/en/language/functions/communication/serial/print/](https://www.arduino.cc/reference/en/language/functions/communication/serial/print/)
+  [https://www.arduino.cc/reference/en/language/functions/communication/serial/print/](https://www.arduino.cc/reference/en/language/functions/communication/serial/print/)
 
 ----------
