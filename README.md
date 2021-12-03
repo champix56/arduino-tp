@@ -7,6 +7,7 @@ cahier de tp pour le cours arduino
 - 1x led
 - 1x push button
 - 2x resistance 1k&ohm;
+- 1x potentiomètre linéaire
 
 # Arduino_tp_list
 
@@ -482,4 +483,80 @@ fichier fritzing : *projets/tp4b/projet4b.fzz*
   - *SerialEvent*
     [https://www.arduino.cc/reference/en/language/functions/communication/serial/serialevent/](https://www.arduino.cc/reference/en/language/functions/communication/serial/serialevent/)
   
+----------
+# Projet 5
+
+Découverte du convertisseur Analogique / numérique (CAN/DAC) 10bits
+
+![conversion analogique / numérique](img/dac.png)
+
+## 5. Enoncé
+
+- prendre la mesure en volt de la sortie d'un potentiomètre linéaire
+- écrire dans la console la tension
+
+## 5.1. composants
+
+- arduino uno
+- 1x potentiomètre linéaire
+
+## 5.2. code
+
+fichier source : *projets/tp5/tp5.ino*
+
+~~~c
+void setup()
+{
+  // def. de la vitesse du port série
+  Serial.begin(9600);
+
+  // Ecriture sans retour chariot
+  Serial.println("Projet 5");
+}
+
+void loop()
+{
+  uint8_t potValue = analogRead(A1);
+  analogWrite(A0, potValue);
+  
+  float voltValue= ( 5 / 1024 ) * potValue;
+  Serial.print("Valeur de tension : ");
+  Serial.print(voltValue);
+  Serial.print("V");
+}
+~~~
+
+### 5.2.1. ***analogRead(*IOPin*)***
+
+- **retour** : entier entre 0 et 1023 correspondant à la conversion de la tension d'entrée en fonction de la tension de réf de la carte (+5v) soit 5/1024 = 0.0048828125v par palier
+
+- *IOPin* : [cf. : valeur ou nom de l'entrée](#iopin)
+  
+### 5.2.1. ***analogWrite(*IOPin*, *analogValue*)***
+
+- *IOPin* : [cf. : valeur ou nom de l'entrée](#iopin)
+- *analogValue* : valeur entière de 0 à 1023 représentant une fraction de la tension max
+
+## 5.3 montage
+
+analogique
+
+fichier fritzing : *projets/tp5/projet5.fzz*
+
+![projet 5](img/projet5.png)
+
+avec régulation de sortie pwm
+
+fichier fritzing : *projets/tp5/projet5.fzz*
+
+![projet 5 dimmable](img/projet5-pwmDim.png)
+
+## 5.4. doc officiels
+
+- I/O analogique
+  - *analogRead*
+    [https://www.arduino.cc/reference/en/language/functions/analog-io/analogread/](https://www.arduino.cc/reference/en/language/functions/analog-io/analogread/)
+  - *analogWrite*
+    [https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/](https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/)
+
 ----------
