@@ -372,7 +372,7 @@ fonction de vérification de l'existence d'un symbole affichable pour la valeur 
 
 ### 4.3. montage
 
-projet.fzz
+fichier fritzing : *projets/tp4/projet4.fzz*
 
 ![alt](img/projet1.png)
 
