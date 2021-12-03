@@ -6,7 +6,9 @@ cahier de tp pour le cours arduino
 - arduino uno
 - 1x led
 - 1x push button
-- 2x resistance 1k&ohm;
+- 2x résistance 1k&ohm;
+- 1x résistance 6.8k&ohm;
+- 1x résistance 680&ohm;
 - 1x potentiomètre linéaire
 
 # Arduino_tp_list
@@ -558,5 +560,76 @@ fichier fritzing : *projets/tp5/projet5.fzz*
     [https://www.arduino.cc/reference/en/language/functions/analog-io/analogread/](https://www.arduino.cc/reference/en/language/functions/analog-io/analogread/)
   - *analogWrite*
     [https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/](https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/)
+
+----------
+# Projet 5a
+
+## 5a. Enoncé
+
+transformation du projet en lecteur de tension (voltmètre) pour une tension maximal de 31v et une intensité d'entrée dépassant pas 200mA **en utilisant des valeur normalisées de résistance**.
+
+utilisation de la loi de Kirchhoff, le pont diviseur de tension.
+
+calculateur en ligne :
+[https://www.digikey.fr/fr/resources/conversion-calculators/conversion-calculator-voltage-divider]([https://link](https://www.digikey.fr/fr/resources/conversion-calculators/conversion-calculator-voltage-divider))
+
+![calcul loi Kirchhoff](img/pont-res.png)
+
+pour limiter 31v a une sortie 5v voici les valeurs :
+
+- R1 : **6.8K&ohm; + 1k&ohm;**
+  
+  >l'intensité (I=U/R) max traversant cette résistance est de :
+  >
+  >31 / 7800 = 0.00397A
+  >
+  >soit 3mA
+
+- R2 : **1.5K&ohm;**
+
+## 5a.1. composants
+
+- arduino uno
+- 1x LED
+- 1x résistance 6.8k&ohm;
+- 1x résistance 1k&ohm;
+- 1x résistance 680&ohm;
+
+## 5a.2. code
+
+fichier source : *projets/tp5a/tp5a.ino*
+
+~~~c
+void setup()
+{
+  // def. de la vitesse du port série
+  Serial.begin(9600);
+
+  // Ecriture sans retour chariot
+  Serial.println("Projet 5");
+}
+
+void loop()
+{
+  uint8_t potValue = analogRead(A1);
+  analogWrite(A0, potValue);
+  
+  //ratio pour 31v
+  float ratio = 31/5;
+
+  //calcul de tension
+  float voltValue= (( 5 / 1024 ) * potValue)*ratio;
+
+  Serial.print("Valeur de tension : ");
+  Serial.print(voltValue);
+  Serial.print("V");
+}
+~~~
+
+## 5a.3. montage
+
+fichier fritzing : *projets/tp5a/projet5a.fzz*
+
+![projet.fzz](img/projet5-kirchhoff.png)
 
 ----------
