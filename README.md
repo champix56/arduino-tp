@@ -644,14 +644,18 @@ Grâce aux lois régissant l'électronique :
 
 - loi des mailles
   - la somme des tensions dans une maille est égale à 0v
+  
   ![aloi des mailles](img/Loi_des_mailles.png)
+
 - loi des mailles
   - La somme des intensité entrante en un point est égale a la somme des intensités sortante du même points
+  
   ![loi des nœuds](img/loi-des-noeuds.png)
 
 - la loi d'ohm avec la formule U = R * I 
-et ses déclinaisons I=U/R &amp; R = U/I
-![loi d'ohm](img/loi-ohm.png)
+  et ses déclinaisons I=U/R &amp; R = U/I
+
+  ![loi d'ohm](img/loi-ohm.png)
 
 il est facile déduire la valeur d'une résistance dans un pont diviseur de tension grâce à la tension récupérer
 
