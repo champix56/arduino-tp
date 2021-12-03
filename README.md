@@ -271,3 +271,120 @@ fichier fritzing : *projets/tp3/projet3.fzz*
   [https://www.arduino.cc/reference/en/language/functions/communication/serial/print/](https://www.arduino.cc/reference/en/language/functions/communication/serial/print/)
 
 ----------
+
+# Projet 4
+
+Découverte de la liaison série *HardwareSerial*.
+
+Lecture depuis le port série matériel
+
+## 4. Enoncé
+
+- base : [projet 3](#projet-3)
+- modifier l'état d'allumage lors d'une saisie '1' ou 'on' sur le port série
+  - la saisie sera effectuer sans string uniquement par tableau **char [ ]**
+- afficher l'état d'allumage en cas de changement
+
+## 4.1. composants
+
+- arduino uno
+- 1x led
+- 1x résistances
+
+## 4.2. code
+
+fichier source : *projets/tp4/tp4.ino*
+
+~~~c
+bool ledState = false;
+void flushSerialInput();
+void setup()
+{
+  // définition du mode de l'I/O
+  pinMode(2, OUTPUT);
+  pinMode(3, INPUT);
+  digitalWrite(2, ledState);
+
+  // def. de la vitesse du port série
+  Serial.begin(9600);
+
+  // Ecriture sans retour chariot
+  Serial.println("Projet 4 \nLecture/Ecriture série");
+}
+
+void loop()
+{
+  if (Serial.available())
+  {
+    // attente du remplissage du buffer avant lecture
+    delay(100);
+    char str[5] = "";
+    int i=0;
+    //strlen(str)< (taille Max - caractère d'arrêt de chaine)
+    while (Serial.available() && strlen(str) < 4)
+    {
+      char aChar ='\0';
+      aChar=Serial.read();
+      //si le caractère reçu est imprimable
+      if(isPrintable(aChar)){
+        str[i++]=aChar;
+      }
+    }
+    //vidange du buffer de lecture
+    flushSerialInput();
+    str[i]='\0';
+    //si la chaine est "on" ou "1"
+    if(strcmp(str,'on') || strcmp(str,"1")){
+      ledState=true;
+    }
+    //sinon si la chaine est "off" ou "0"
+    else if (strcmp(str,"off")|| strcmp(str,"0"))
+    {
+        ledState=false;
+    }
+  }
+  digitalWrite(2, ledState);
+}
+void flushSerialInput(){
+  while(Serial.available()){Serial.read();}
+}
+~~~
+
+### 4.2.1. **Serial.available()**
+
+Fonction qui *retourne le nombre d'octet(s) (caractère(s)) disponible* dans le buffer de réception de la liaison série. A chaque exécution de lecture sur le buffer le nb disponible descend
+
+- **retour** : entier du nb d'octet disponible à la lecture
+  
+### 4.2.2. **Serial.read()**
+
+Fonction de lecture octet par octet du buffer d'entrée de Serial. un équivalent existe pour lire un string complet jusqu'à un retour chariot ***serial.readString()***
+
+- **retour** : premier octet disponible à la lecture ou -1 si aucune valeur existe
+
+### 4.2.3. **isPrintable(aChar)**
+
+fonction de vérification de l'existence d'un symbole affichable pour la valeur d'un caractère
+
+- **retour** : vrai si le caractère est imprimable et faux si c'est un caractère de contrôle non affichable
+
+- *aChar* : un caractère unique à tester
+
+### 4.3. montage
+
+projet.fzz
+
+![alt](img/projet1.png)
+
+### 4.4. Doc officiels
+
+- **HarwareSerial**
+  [https://www.arduino.cc/reference/en/language/functions/communication/serial/](https://www.arduino.cc/reference/en/language/functions/communication/serial/)
+  - *Serial.available*
+    [https://www.arduino.cc/reference/en/language/functions/communication/serial/available/](https://www.arduino.cc/reference/en/language/functions/communication/serial/available/)
+  - *Serial.read*
+    [https://www.arduino.cc/reference/en/language/functions/communication/serial/read/](https://www.arduino.cc/reference/en/language/functions/communication/serial/read/)
+  - *Serial.readString*
+    [https://www.arduino.cc/reference/en/language/functions/communication/serial/readstring/](https://www.arduino.cc/reference/en/language/functions/communication/serial/readstring/)
+  
+----------
