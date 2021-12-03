@@ -43,7 +43,7 @@ Découverte du code arduino minimum
 
 Découverte des sorties *Tout Ou Rien*.
 
-## 5. Enoncé
+## 1. Enoncé
 
 Clignotement continue d'une diode électroluminescente
 
