@@ -836,3 +836,5 @@ fichier fritzing : *projets/tp6/projet6.fzz*
   - *setCursor*
   
     [https://www.arduino.cc/reference/en/libraries/liquidcrystal/setCursor](https://www.arduino.cc/reference/en/libraries/liquidcrystal/setCursor)
+
+----------
