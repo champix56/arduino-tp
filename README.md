@@ -12,6 +12,8 @@ cahier de tp pour le cours arduino
 - 1x résistance 680&ohm;
 - 1x potentiomètre linéaire
 - 1x thermistance *(103)* 1k&ohm;
+- LCD 16x2 ou 20x4 controllé par HD44780
+  
 
 # Arduino_tp_list
 
@@ -644,13 +646,17 @@ Grâce aux lois régissant l'électronique :
 
 - loi des mailles
   - la somme des tensions dans une maille est égale à 0v
-  ![aloi des mailles](img/Loi_des_mailles.png)
+  
+![aloi des mailles](img/Loi_des_mailles.png)
+
 - loi des mailles
   - La somme des intensité entrante en un point est égale a la somme des intensités sortante du même points
-  ![loi des nœuds](img/loi-des-noeuds.png)
+  
+![loi des nœuds](img/loi-des-noeuds.png)
 
-- la loi d'ohm avec la formule U = R * I 
+- la loi d'ohm avec la formule U = R * I
 et ses déclinaisons I=U/R &amp; R = U/I
+
 ![loi d'ohm](img/loi-ohm.png)
 
 il est facile déduire la valeur d'une résistance dans un pont diviseur de tension grâce à la tension récupérer
@@ -701,3 +707,132 @@ fichier fritzing : *projets/tp5b/projet5b.fzz*
 ![ohm mètre](img/projet5b.png)
 
 ----------
+
+# projet 6
+
+Usage d'un lcd 16x2 ou 20x4 caracteres à base de hitachi hd44780.
+
+Découverte de la [***librairie officiel LiquidCrystal***](https://www.arduino.cc/reference/en/libraries/liquidcrystal/)
+
+le cablage utilisé sera uniquement avec les 4bits de poids fort (HSB) 4/5/6/7 du LCD. il est possible de cabler les 8 bits complets du LCD.
+
+## 6. Enoncé
+
+- afficher la tension en A3 et la valeur de la résistance R2 du [projet 5b](#projet-5b) sur un lcd 16x2 ou 20x04
+
+## 6.1 Composants
+
+- arduino uno
+- 1x résistance 2.2K&ohm;
+- LCD 16x2 ou 20x4 contrôlé par HD44780
+
+## 6.2 Code
+
+fichier source : *projets/tp6/tp6.ino*
+
+~~~c
+#include <LiquidCrystal.h>
+#define CANPIN A0
+// initialisation de la library
+const int rs = 12, en = 11, d4 = 7, d5 = 6, d6 = 5, d7 = 4;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+float R1 = 7800.0F;
+float VIN = 5.0F;
+
+void setup() {
+  // set up du lcd avec dimensions
+  lcd.begin(16, 2);
+  // Ecrire un message
+  lcd.print("arduino");
+  //positionner le curseur d'écriture
+  lcd.setCursor(7, 1);
+  lcd.print("ohm mètre");
+  delay(2500);
+  //vider l'écran
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("ohm mètre");
+  lcd.setCursor(0, 1);
+  lcd.print("Res : ");
+}
+
+void loop() {
+  // récupérer la tensions aux bornes de R2
+  int canValue = analogRead(CANPIN);
+  // tension en A3
+  float vOut = canValue * (VIN / 1024);
+  // calcul:
+  // vOut=(R1/(R1+R2)) * VIN
+  // r2=R1 * ( VIN / vOut) -R1
+  float r2 = R1 * (VIN / vOut) - R1;
+  //ecriture du resultat
+  lcd.setCursor(6, 1);
+  lcd.print(r2);
+}
+~~~
+
+### 6.2.1 **LiquidCrystal(*rsPin*, *enPin*, *d4Pin*, *d5Pin*, *d6Pin*, *d7Pin* )**
+
+instancie la variable pour manipuler le lcd
+
+- **Retour** : instance de lcd
+- *rsPin* : pin Register Select
+- *enPin* : pin Enable
+- *d4Pin* ... *d7Pin* : pin des 4 bits de poids fort, il est possible de câbler et spécifier les 8 bits pour accélérer les transferts
+
+### 6.2.2. lcd.**begin(*lcdWidth*, *lcdHeight*)**
+
+démarre l'instance d’écran avec ses dimensions caractères
+
+- *lcdWidth* : nombre de colonnes de caractères
+- *lcdHeight* : nom de lignes de caractères
+
+### 6.2.3. lcd.**setCursor(*xPosition*, *yPosition*)**
+
+Positionne le curseur d'écriture
+
+- *xPosition* : position horizontale à partir de 0
+- *yPosition* : position verticale à partir de 0
+
+### 6.2.4. lcd.**print(*printbaleValue*)**
+
+Ecrit une valeur imprimable sur l'écran a la position courante du curseur
+
+- *printableValue* : une chaine, un entier, un float, ...
+
+### 6.2.5. lcd.**clear()**
+
+remet à zéro l'affichage de tous les caractères de l'écran
+
+### 6.3. Montage
+
+fichier fritzing : *projets/tp6/projet6.fzz*
+
+![montage projet 6 ohm metre](img/projet6.png)
+
+### 6.4. Doc
+
+- *LiquidCrystal*
+  
+  [https://www.arduino.cc/reference/en/libraries/liquidcrystal/](https://www.arduino.cc/reference/en/libraries/liquidcrystal/)
+  
+  - *begin*
+  
+    [https://www.arduino.cc/reference/en/libraries/liquidcrystal/begin](https://www.arduino.cc/reference/en/libraries/liquidcrystal/begin)
+
+  - *clear*
+  
+    [https://www.arduino.cc/reference/en/libraries/liquidcrystal/clear](https://www.arduino.cc/reference/en/libraries/liquidcrystal/clear)
+  
+  - *print*
+  
+    [https://www.arduino.cc/reference/en/libraries/liquidcrystal/print](https://www.arduino.cc/reference/en/libraries/liquidcrystal/print)
+  
+  - *println*
+  
+    [https://www.arduino.cc/reference/en/libraries/liquidcrystal/println](https://www.arduino.cc/reference/en/libraries/liquidcrystal/println)
+  
+  - *setCursor*
+  
+    [https://www.arduino.cc/reference/en/libraries/liquidcrystal/setCursor](https://www.arduino.cc/reference/en/libraries/liquidcrystal/setCursor)
