@@ -836,3 +836,116 @@ fichier fritzing : *projets/tp6/projet6.fzz*
   - *setCursor*
   
     [https://www.arduino.cc/reference/en/libraries/liquidcrystal/setCursor](https://www.arduino.cc/reference/en/libraries/liquidcrystal/setCursor)
+
+----------
+
+# Projet 6a
+
+Même projet que le [projet 6](#projet-6) avec des caractères non standard dessinés
+
+Nous utiliserons un outils en ligne pour designer facilement le caractère [https://mikeyancey.com/hamcalc/lcd_characters.php](https://mikeyancey.com/hamcalc/lcd_characters.php)
+
+![character designer](img/lcdCharDesign.png)
+
+## 6a. Enoncé
+
+- Ajouter le caractère &ohm; à la suite de la valeur.
+
+## 6a.1. Composants
+
+- Même liste que pour le [projet 6](#61-composants)
+  
+## 6a.2. Code
+
+~~~c
+#include <LiquidCrystal.h>
+#define CANPIN A0
+// initialisation de la librairie
+const int rs = 12, en = 11, d4 = 7, d5 = 6, d6 = 5, d7 = 4;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+//tableau de représentation 8x8 pixel Boolean pour un lcd char
+byte OHM[8] = {
+        B00000,
+        B01110,
+        B10001,
+        B10001,
+        B01010,
+        B11011,
+        B00000,
+        B00000
+};
+
+float R1 = 7800.0F;
+float VIN = 5.0F;
+
+void setup()
+{
+    //set up du caractère personnalisé
+    lcd.createChar(0, OHM);
+    // set up du lcd avec dimensions
+    lcd.begin(16, 2);
+    // Ecrire un message
+    lcd.print("arduino");
+    // positionner le curseur d'écriture
+    lcd.setCursor(7, 1);
+    lcd.print("ohm mètre");
+    delay(2500);
+    // vider l'écran
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("ohm mètre");
+    lcd.setCursor(0, 1);
+    lcd.print("Res : ");
+}
+
+void loop()
+{
+    // récupérer la tensions aux bornes de R2
+    int canValue = analogRead(CANPIN);
+    // tension en A3
+    float vOut = canValue * (VIN / 1024);
+    // calcul:
+    // vOut=(R1/(R1+R2)) * VIN
+    // r2=R1 * ( VIN / vOut) -R1
+    float r2 = R1 * (VIN / vOut) - R1;
+    lcd.setCursor(6, 1);
+    lcd.print(r2);
+    lcd.write(0);
+}
+
+~~~
+
+### 6a.2.1. lcd.**createChar(*charPosition*, *charValue*)**
+
+Définit et envoie le nouveaux caractère dans la liste des caractères présent dans la mémoire du LCD
+
+- *charPosition* : position sous forme de *byte* du caractère dans le tableau de caractères disponible dans le lcd
+- *charValue* : tableau de 8 lignes d'octets (8 valeurs booleans) de l'état de chaque pixels pour l'affichage du caractère
+
+### 6a.2.2. lcd.**write(*charPosition*)**
+
+Ecrire un caractère à la position actuelle du curseur en envoyant la position du caractère dans la tableau mémoire du lcd
+
+- *charPosition* : cf. [charPosition](#6a21-lcdcreatecharcharposition-charvalue)
+
+## 6a.3. Montage
+
+fichier fritzing : projets/tp6a/projet6a.fzz
+
+![projet 6a](img/projet6.png)
+
+## 6a.4. Doc
+
+- *LiquidCrystal*
+  
+  [https://www.arduino.cc/reference/en/libraries/liquidcrystal/](https://www.arduino.cc/reference/en/libraries/liquidcrystal/)
+  
+  - *createChar*
+  
+    [https://www.arduino.cc/reference/en/libraries/liquidcrystal/createchar/](https://www.arduino.cc/reference/en/libraries/liquidcrystal/createchar/)
+
+  - *write*
+  
+    [https://www.arduino.cc/reference/en/libraries/liquidcrystal/write/](https://www.arduino.cc/reference/en/libraries/liquidcrystal/write/)
+
+----------
