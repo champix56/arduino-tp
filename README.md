@@ -12,7 +12,9 @@ cahier de tp pour le cours arduino
 - 1x résistance 680&ohm;
 - 1x potentiomètre linéaire
 - 1x thermistance *(103)* 1k&ohm;
-
+- LCD 16x2 ou 20x4 controllé par HD44780
+- Module I&sup2;C RTC DS1307
+  
 # Arduino_tp_list
 
 # Projet 0
@@ -644,13 +646,17 @@ Grâce aux lois régissant l'électronique :
 
 - loi des mailles
   - la somme des tensions dans une maille est égale à 0v
-  ![aloi des mailles](img/Loi_des_mailles.png)
+  
+![aloi des mailles](img/Loi_des_mailles.png)
+
 - loi des mailles
   - La somme des intensité entrante en un point est égale a la somme des intensités sortante du même points
-  ![loi des nœuds](img/loi-des-noeuds.png)
+  
+![loi des nœuds](img/loi-des-noeuds.png)
 
-- la loi d'ohm avec la formule U = R * I 
+- la loi d'ohm avec la formule U = R * I
 et ses déclinaisons I=U/R &amp; R = U/I
+
 ![loi d'ohm](img/loi-ohm.png)
 
 il est facile déduire la valeur d'une résistance dans un pont diviseur de tension grâce à la tension récupérer
@@ -701,3 +707,363 @@ fichier fritzing : *projets/tp5b/projet5b.fzz*
 ![ohm mètre](img/projet5b.png)
 
 ----------
+
+# projet 6
+
+Usage d'un lcd 16x2 ou 20x4 caracteres à base de hitachi hd44780.
+
+Découverte de la [***librairie officiel LiquidCrystal***](https://www.arduino.cc/reference/en/libraries/liquidcrystal/)
+
+le cablage utilisé sera uniquement avec les 4bits de poids fort (HSB) 4/5/6/7 du LCD. il est possible de cabler les 8 bits complets du LCD.
+
+## 6. Enoncé
+
+- afficher la tension en A3 et la valeur de la résistance R2 du [projet 5b](#projet-5b) sur un lcd 16x2 ou 20x04
+
+## 6.1 Composants
+
+- arduino uno
+- 1x résistance 2.2K&ohm;
+- LCD 16x2 ou 20x4 contrôlé par HD44780
+
+## 6.2 Code
+
+fichier source : *projets/tp6/tp6.ino*
+
+~~~c
+#include <LiquidCrystal.h>
+#define CANPIN A0
+// initialisation de la library
+const int rs = 12, en = 11, d4 = 7, d5 = 6, d6 = 5, d7 = 4;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+float R1 = 7800.0F;
+float VIN = 5.0F;
+
+void setup() {
+  // set up du lcd avec dimensions
+  lcd.begin(16, 2);
+  // Ecrire un message
+  lcd.print("arduino");
+  //positionner le curseur d'écriture
+  lcd.setCursor(7, 1);
+  lcd.print("ohm mètre");
+  delay(2500);
+  //vider l'écran
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("ohm mètre");
+  lcd.setCursor(0, 1);
+  lcd.print("Res : ");
+}
+
+void loop() {
+  // récupérer la tensions aux bornes de R2
+  int canValue = analogRead(CANPIN);
+  // tension en A3
+  float vOut = canValue * (VIN / 1024);
+  // calcul:
+  // vOut=(R1/(R1+R2)) * VIN
+  // r2=R1 * ( VIN / vOut) -R1
+  float r2 = R1 * (VIN / vOut) - R1;
+  //ecriture du resultat
+  lcd.setCursor(6, 1);
+  lcd.print(r2);
+}
+~~~
+
+### 6.2.1 **LiquidCrystal(*rsPin*, *enPin*, *d4Pin*, *d5Pin*, *d6Pin*, *d7Pin* )**
+
+instancie la variable pour manipuler le lcd
+
+- **Retour** : instance de lcd
+- *rsPin* : pin Register Select
+- *enPin* : pin Enable
+- *d4Pin* ... *d7Pin* : pin des 4 bits de poids fort, il est possible de câbler et spécifier les 8 bits pour accélérer les transferts
+
+### 6.2.2. lcd.**begin(*lcdWidth*, *lcdHeight*)**
+
+démarre l'instance d’écran avec ses dimensions caractères
+
+- *lcdWidth* : nombre de colonnes de caractères
+- *lcdHeight* : nom de lignes de caractères
+
+### 6.2.3. lcd.**setCursor(*xPosition*, *yPosition*)**
+
+Positionne le curseur d'écriture
+
+- *xPosition* : position horizontale à partir de 0
+- *yPosition* : position verticale à partir de 0
+
+### 6.2.4. lcd.**print(*printbaleValue*)**
+
+Ecrit une valeur imprimable sur l'écran a la position courante du curseur
+
+- *printableValue* : une chaine, un entier, un float, ...
+
+### 6.2.5. lcd.**clear()**
+
+remet à zéro l'affichage de tous les caractères de l'écran
+
+### 6.3. Montage
+
+fichier fritzing : *projets/tp6/projet6.fzz*
+
+![montage projet 6 ohm metre](img/projet6.png)
+
+### 6.4. Doc
+
+- *LiquidCrystal*
+  
+  [https://www.arduino.cc/reference/en/libraries/liquidcrystal/](https://www.arduino.cc/reference/en/libraries/liquidcrystal/)
+  
+  - *begin*
+  
+    [https://www.arduino.cc/reference/en/libraries/liquidcrystal/begin](https://www.arduino.cc/reference/en/libraries/liquidcrystal/begin)
+
+  - *clear*
+  
+    [https://www.arduino.cc/reference/en/libraries/liquidcrystal/clear](https://www.arduino.cc/reference/en/libraries/liquidcrystal/clear)
+  
+  - *print*
+  
+    [https://www.arduino.cc/reference/en/libraries/liquidcrystal/print](https://www.arduino.cc/reference/en/libraries/liquidcrystal/print)
+  
+  - *println*
+  
+    [https://www.arduino.cc/reference/en/libraries/liquidcrystal/println](https://www.arduino.cc/reference/en/libraries/liquidcrystal/println)
+  
+  - *setCursor*
+  
+    [https://www.arduino.cc/reference/en/libraries/liquidcrystal/setCursor](https://www.arduino.cc/reference/en/libraries/liquidcrystal/setCursor)
+
+----------
+
+# Projet 6a
+
+Même projet que le [projet 6](#projet-6) avec des caractères non standard dessinés
+
+Nous utiliserons un outils en ligne pour designer facilement le caractère [https://mikeyancey.com/hamcalc/lcd_characters.php](https://mikeyancey.com/hamcalc/lcd_characters.php)
+
+![character designer](img/lcdCharDesign.png)
+
+## 6a. Enoncé
+
+- Ajouter le caractère &ohm; à la suite de la valeur.
+
+## 6a.1. Composants
+
+- Même liste que pour le [projet 6](#61-composants)
+  
+## 6a.2. Code
+
+~~~c
+#include <LiquidCrystal.h>
+#define CANPIN A0
+// initialisation de la librairie
+const int rs = 12, en = 11, d4 = 7, d5 = 6, d6 = 5, d7 = 4;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+//tableau de représentation 8x8 pixel Boolean pour un lcd char
+byte OHM[8] = {
+        B00000,
+        B01110,
+        B10001,
+        B10001,
+        B01010,
+        B11011,
+        B00000,
+        B00000
+};
+
+float R1 = 7800.0F;
+float VIN = 5.0F;
+
+void setup()
+{
+    //set up du caractère personnalisé
+    lcd.createChar(0, OHM);
+    // set up du lcd avec dimensions
+    lcd.begin(16, 2);
+    // Ecrire un message
+    lcd.print("arduino");
+    // positionner le curseur d'écriture
+    lcd.setCursor(7, 1);
+    lcd.print("ohm mètre");
+    delay(2500);
+    // vider l'écran
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("ohm mètre");
+    lcd.setCursor(0, 1);
+    lcd.print("Res : ");
+}
+
+void loop()
+{
+    // récupérer la tensions aux bornes de R2
+    int canValue = analogRead(CANPIN);
+    // tension en A3
+    float vOut = canValue * (VIN / 1024);
+    // calcul:
+    // vOut=(R1/(R1+R2)) * VIN
+    // r2=R1 * ( VIN / vOut) -R1
+    float r2 = R1 * (VIN / vOut) - R1;
+    lcd.setCursor(6, 1);
+    lcd.print(r2);
+    lcd.write(0);
+}
+
+~~~
+
+### 6a.2.1. lcd.**createChar(*charPosition*, *charValue*)**
+
+Définit et envoie le nouveaux caractère dans la liste des caractères présent dans la mémoire du LCD
+
+- *charPosition* : position sous forme de *byte* du caractère dans le tableau de caractères disponible dans le lcd
+- *charValue* : tableau de 8 lignes d'octets (8 valeurs booleans) de l'état de chaque pixels pour l'affichage du caractère
+
+### 6a.2.2. lcd.**write(*charPosition*)**
+
+Ecrire un caractère à la position actuelle du curseur en envoyant la position du caractère dans la tableau mémoire du lcd
+
+- *charPosition* : cf. [charPosition](#6a21-lcdcreatecharcharposition-charvalue)
+
+## 6a.3. Montage
+
+fichier fritzing : projets/tp6a/projet6a.fzz
+
+![projet 6a](img/projet6.png)
+
+## 6a.4. Doc
+
+- *LiquidCrystal*
+  
+  [https://www.arduino.cc/reference/en/libraries/liquidcrystal/](https://www.arduino.cc/reference/en/libraries/liquidcrystal/)
+  
+  - *createChar*
+  
+    [https://www.arduino.cc/reference/en/libraries/liquidcrystal/createchar/](https://www.arduino.cc/reference/en/libraries/liquidcrystal/createchar/)
+
+  - *write*
+  
+    [https://www.arduino.cc/reference/en/libraries/liquidcrystal/write/](https://www.arduino.cc/reference/en/libraries/liquidcrystal/write/)
+
+----------
+
+# Projet 7
+
+Découverte du protocole I&sup2;C
+Protocole en bus supportant jusqu'a 127 composants sur le bus.
+Ce protocole communique grâce à un système d'adresse de composants sur le bus et est cadencé par une horloge pour synchroniser les échanges entre les composants *esclave* et le composant *maitre*
+
+![protocole I&usup2;C](img/i2c.png)
+
+découverte de sensor I&sup2; avec librairie
+
+## 7. Enoncé
+
+- Création d'une horloge affichée sur écran LCD grâce au "Real Time Clock" RTC DS1307, possédant une pile pour la persistance de la valeur *temps*
+
+- pour la découverte des adresses de composants disponibles nous utiliserons l'exemple de *wire* **i2c_scanner.ino**
+
+N.B.: pensez à mettre à l'heure le composants avant usage
+## 7.1. Composants
+
+- Arduino UNO
+- RTC DS1307
+- 2x Résistances 1K&ohm;
+  
+## 7.2. Code
+
+### 7.2.a. Mise à l'heure du composant à partir d'infos du compilateur
+
+~~~c
+  tmElements_t tm;
+  void setup(){
+    Serial.begin(9600);
+    // Récupération des valeurs du compilateur
+    if (getDate(__DATE__) && getTime(__TIME__)) {
+      // Ecriture sur le composant
+      if (!RTC.write(tm)) {
+        Serial.println("erreur");
+      }
+    }
+  }
+~~~
+
+### 7.2.b. Lecture de l'heure
+
+~~~c
+//librairie i2C
+#include <Wire.h>
+//structure de gestion de temps
+#include <TimeLib.h>
+//librairie d'accès au RTC
+#include <DS1307RTC.h>
+
+
+// initialisation de la librairie LCD
+#include <LiquidCrystal.h>
+const int rs = 12, en = 11, d4 = 7, d5 = 6, d6 = 5, d7 = 4;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+
+void setup() {
+  Serial.begin(9600);
+  lcd.begin(16, 2);
+  lcd.println("DS1307RTC Read Test");
+}
+
+void loop() {
+  tmElements_t tm;
+  lcd.setCursor(1,0);
+  lcd.print("                ");
+  lcd.setCursor(1,0);
+  if (RTC.read(tm)) {
+    Serial.print("Ok, Time");
+    print2digits(tm.Hour);
+    lcd.print(':');
+    print2digits(tm.Minute);
+    lcd.print(':');
+    print2digits(tm.Second);
+    lcd.print(", Date (D/M/Y) = ");
+    lcd.print(tm.Day);
+    lcd.print('/');
+    lcd.print(tm.Month);
+    Serial.write('/');
+    lcd.print(tmYearToCalendar(tm.Year));
+  } else {
+    if (RTC.chipPresent()) {
+      Serial.println("The DS1307 is stopped.  Please run the SetTime");
+      lcd.print("erreur date");
+    } else {
+      Serial.println("DS1307 read error!  Please check the circuitry.");
+      lcd.print("erreur lecture");
+    }
+  }
+  delay(1000);
+}
+
+void print2digits(int number) {
+    
+  if (number >= 0 && number < 10) {
+    lcd.print("0");
+  }
+  
+  lcd.print(number);
+}
+~~~
+
+### 7.2.1. RTC.**read(*timeStruct*)**  RTC.**write(*timeStruct*)**
+
+Lecture / écriture du contenu d'une structure de temps.
+
+- Retour : booléen de la réussite de la lecture / écriture
+
+- *timeStruct* : structure tmElements_t contenant l'heure déjà assemblée
+
+### 7.2.2. RTC.**chipPresent()**
+
+test de présence du composant à l'adresse prévue (0x77)
+
+- Retour : booléen de l'état de présence
