@@ -8,7 +8,7 @@
 // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
 OneWire oneWire(ONE_WIRE_BUS);
 
-// Pass our oneWire reference to Dallas Temperature. 
+// Pass our oneWire reference to Dallas Temperature.
 DallasTemperature sensors(&oneWire);
 
 
@@ -28,35 +28,32 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 void setup() {
   Serial.begin(9600);
-    // Start up the library
+  // Start up the library
   sensors.begin();
   lcd.begin(16, 2);
   lcd.println("DS1307RTC");
 }
 
 void loop() {
-  lcd.setCursor(0,9);
+  lcd.setCursor(0, 9);
   lcd.print("      ");
-  lcd.setCursor(0,9);
+  lcd.setCursor(0, 9);
 
-  sensors.requestTemperatures(); // Send the command to get temperatures
-   // After we got the temperatures, we can print them here.
+  sensors.requestTemperatures();  // Send the command to get temperatures
+                                  // After we got the temperatures, we can print them here.
   // We use the function ByIndex, and as an example get the temperature from the first sensor only.
   float tempC = sensors.getTempCByIndex(0);
 
   // Check if reading was successful
-  if(tempC != DEVICE_DISCONNECTED_C) 
-  {
+  if (tempC != DEVICE_DISCONNECTED_C) {
     lcd.println(tempC);
-  } 
-  else
-  {
+  } else {
     Serial.println("Error: Could not read temperature data");
   }
   tmElements_t tm;
-  lcd.setCursor(1,0);
+  lcd.setCursor(1, 0);
   lcd.print("                ");
-  lcd.setCursor(1,0);
+  lcd.setCursor(1, 0);
   if (RTC.read(tm)) {
     Serial.print("Ok, Time");
     print2digits(tm.Hour);
@@ -83,10 +80,10 @@ void loop() {
 }
 
 void print2digits(int number) {
-    
+
   if (number >= 0 && number < 10) {
     lcd.print("0");
   }
-  
+
   lcd.print(number);
 }
