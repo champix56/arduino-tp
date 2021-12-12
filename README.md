@@ -1,4 +1,5 @@
 # arduino-tp
+
 cahier de tp pour le cours arduino
 
 ## Composants necessaires
@@ -14,6 +15,7 @@ cahier de tp pour le cours arduino
 - 1x thermistance *(103)* 1k&ohm;
 - LCD 16x2 ou 20x4 controllé par HD44780
 - Module I&sup2;C RTC DS1307
+- 1x DS18B20 onewire temperature sensor
   
 # Arduino_tp_list
 
@@ -395,6 +397,7 @@ fichier fritzing : *projets/tp4/projet4.fzz*
     [https://www.arduino.cc/reference/en/language/functions/communication/serial/readstring/](https://www.arduino.cc/reference/en/language/functions/communication/serial/readstring/)
   
 ----------
+
 # Projet 4b
 
 Découverte de la liaison série *HardwareSerial*.
@@ -490,6 +493,7 @@ fichier fritzing : *projets/tp4b/projet4b.fzz*
     [https://www.arduino.cc/reference/en/language/functions/communication/serial/serialevent/](https://www.arduino.cc/reference/en/language/functions/communication/serial/serialevent/)
   
 ----------
+
 # Projet 5
 
 Découverte du convertisseur Analogique / numérique (CAN/DAC) 10bits
@@ -566,6 +570,7 @@ fichier fritzing : *projets/tp5/projet5.fzz*
     [https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/](https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/)
 
 ----------
+
 # Projet 5a
 
 ## 5a. Enoncé
@@ -967,6 +972,7 @@ découverte de sensor I&sup2; avec librairie
 - pour la découverte des adresses de composants disponibles nous utiliserons l'exemple de *wire* **i2c_scanner.ino**
 
 N.B.: pensez à mettre à l'heure le composants avant usage
+
 ## 7.1. Composants
 
 - Arduino UNO
@@ -1067,3 +1073,154 @@ Lecture / écriture du contenu d'une structure de temps.
 test de présence du composant à l'adresse prévue (0x77)
 
 - Retour : booléen de l'état de présence
+
+### 7.3. Montage
+
+Fichier fritzing : projets/tp7/projet7.fzz
+
+![projet7.fzz](img/projet7.png)
+
+## 7.4. DOC
+
+- DS1307
+  
+[DS1307 doc](https://www.pjrc.com/teensy/td_libs_DS1307RTC.html)
+
+=======
+
+# Projet 7.a.
+
+découverte du protocole *One Wire*
+
+## 7.a. Enoncé
+
+Transformation du [projet 7](#projet-7) en horloge et thermomètre avec afficheur LCD
+
+## 7.a.1 Composants
+
+- Arduino uno
+- RTC DS1307
+- 1x DS18B20
+
+## 7.a.2 Code
+
+Fichier ino : projets/tp7a/tp7a.ino
+
+~~~c
+// Include the libraries we need
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+// Data wire is plugged into port 5 on the Arduino
+#define ONE_WIRE_BUS 5
+
+// Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
+OneWire oneWire(ONE_WIRE_BUS);
+
+// Pass our oneWire reference to Dallas Temperature.
+DallasTemperature sensors(&oneWire);
+
+
+//librairie i2C
+#include <Wire.h>
+//structure de gestion de temps
+#include <TimeLib.h>
+//librairie d'accès au RTC
+#include <DS1307RTC.h>
+
+
+// initialisation de la librairie LCD
+#include <LiquidCrystal.h>
+const int rs = 12, en = 11, d4 = 7, d5 = 6, d6 = 5, d7 = 4;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+
+void setup() {
+  Serial.begin(9600);
+  // Start up the library
+  sensors.begin();
+  lcd.begin(16, 2);
+  lcd.println("DS1307RTC");
+}
+
+void loop() {
+  lcd.setCursor(0, 9);
+  lcd.print("      ");
+  lcd.setCursor(0, 9);
+
+  sensors.requestTemperatures();  // Send the command to get temperatures
+                                  // After we got the temperatures, we can print them here.
+  // We use the function ByIndex, and as an example get the temperature from the first sensor only.
+  float tempC = sensors.getTempCByIndex(0);
+
+  // Check if reading was successful
+  if (tempC != DEVICE_DISCONNECTED_C) {
+    lcd.println(tempC);
+  } else {
+    Serial.println("Error: Could not read temperature data");
+  }
+  /*
+  [...Code loop du projet 7...]
+  */
+}
+
+void print2digits(int number) {
+
+  if (number >= 0 && number < 10) {
+    lcd.print("0");
+  }
+
+  lcd.print(number);
+}
+
+~~~
+
+### 7.a.2.1. **OneWire oneWire(*ONE_WIRE_BUS*)**
+
+Constructeur de l'objet de bus onewire
+
+- *OWN_WIRE_BUS* : port numérique du bus onewire
+
+### 7.a.2.2. **DallasTemperature sensors(*&oneWire*)**
+
+Constructeur DallasTemperature pour la gestion du composant DS18B20
+
+- *&onewire* : Pointeur vers l'[instance ***onewire***](#7a21-onewire-onewireone_wire_bus)
+
+### 7.a.2.3. sensor.**begin()**
+
+démarrage de l'instance de gestion du ds18b20
+
+### 7.a.2.4.   sensors.**requestTemperatures()**
+
+Récupération des valeurs DS10b20 sur le bus
+
+### 7.a.2.5. sensors.**getTempCByIndex(*busPosition*)**
+
+conversion de la valeur récupérer sur une position dans le bus
+
+- *busPosition* : position du composant dans le bus oneWire
+
+### 7.a.2.6. **DEVICE_DISCONNECTED_C**
+
+Constante renvoyée si aucune composant à l'adresse indiquée
+
+## 7.a.3. Montage
+
+Fichier fritzing : projets/tp7a/projet7a.fzz
+
+![projet7a.fzz](img/projet7a.png)
+
+## 7.a.4. Doc
+
+- oneWire
+
+[https://www.pjrc.com/teensy/td_libs_OneWire.html](https://www.pjrc.com/teensy/td_libs_OneWire.html)
+
+- Dallas temperature
+
+[https://www.milesburton.com/Dallas_Temperature_Control_Library](https://www.milesburton.com/Dallas_Temperature_Control_Library)
+
+[https://github.com/milesburton/Arduino-Temperature-Control-Library](https://github.com/milesburton/Arduino-Temperature-Control-Library)
+
+----------
