@@ -15,6 +15,7 @@ cahier de tp pour le cours arduino
 - 1x thermistance *(103)* 1k&ohm;
 - LCD 16x2 ou 20x4 controllé par HD44780
 - Module I&sup2;C RTC DS1307
+- 1x DS18B20 onewire temperature sensor
   
 # Arduino_tp_list
 
