@@ -952,26 +952,26 @@ fichier fritzing : projets/tp6a/projet6a.fzz
 
 # Projet 7
 
-Decouverte du protocole I&sup2;C
+Découverte du protocole I&sup2;C
 Protocole en bus supportant jusqu'a 127 composants sur le bus.
-Ce protocole comunique grâce à un systeme d'adresse de composants sur le bus et est cadencé par une horloge pour synchronisé les echanges entre les composants *esclave* et le composant *maitre*
+Ce protocole communique grâce à un système d'adresse de composants sur le bus et est cadencé par une horloge pour synchroniser les échanges entre les composants *esclave* et le composant *maitre*
 
 ![protocole I&usup2;C](img/i2c.png)
 
-Decouverte de sensor I&sup2; avec librairie
+découverte de sensor I&sup2; avec librairie
 
 ## 7. Enoncé
 
-- Creation d'une horloge affichée sur ecran LCD grace au "Real Time Clock" RTC DS1307, possedant une pile pour la persistance de la valeur *temps*
+- Création d'une horloge affichée sur écran LCD grâce au "Real Time Clock" RTC DS1307, possédant une pile pour la persistance de la valeur *temps*
 
-- pour la découverte des adresses de composants disponibles nous utiliseron l'exemple de *wire* **i2c_scanner.ino**
+- pour la découverte des adresses de composants disponibles nous utiliserons l'exemple de *wire* **i2c_scanner.ino**
 
-N.B.: pensez a mettre a l'heure le composants avant usage
+N.B.: pensez à mettre à l'heure le composants avant usage
 ## 7.1. Composants
 
-  - Arduino UNO
-  - RTC DS1307
-  - 2x Résistances 1K&ohm;
+- Arduino UNO
+- RTC DS1307
+- 2x Résistances 1K&ohm;
   
 ## 7.2. Code
 
@@ -981,7 +981,7 @@ N.B.: pensez a mettre a l'heure le composants avant usage
   tmElements_t tm;
   void setup(){
     Serial.begin(9600);
-    // Recuperation des valeurs du compilateur
+    // Récupération des valeurs du compilateur
     if (getDate(__DATE__) && getTime(__TIME__)) {
       // Ecriture sur le composant
       if (!RTC.write(tm)) {
@@ -998,7 +998,7 @@ N.B.: pensez a mettre a l'heure le composants avant usage
 #include <Wire.h>
 //structure de gestion de temps
 #include <TimeLib.h>
-//ilbrairie d'acces au RTC
+//librairie d'accès au RTC
 #include <DS1307RTC.h>
 
 
@@ -1056,14 +1056,14 @@ void print2digits(int number) {
 
 ### 7.2.1. RTC.**read(*timeStruct*)**  RTC.**write(*timeStruct*)**
 
-Lecture / ecriture du contenu d'une structure de temps.
+Lecture / écriture du contenu d'une structure de temps.
 
-- Retour : boolean de la reussite de la lecture / ecriture
+- Retour : booléen de la réussite de la lecture / écriture
 
-- *timeStruct* : structure tmElements_t contennt l'heure deja assemblée
+- *timeStruct* : structure tmElements_t contenant l'heure déjà assemblée
 
 ### 7.2.2. RTC.**chipPresent()**
 
-test de présence du composant à l'adresse prevue (0x77)
+test de présence du composant à l'adresse prévue (0x77)
 
-- Retour : boolean de l'état de présence
+- Retour : booléen de l'état de présence
