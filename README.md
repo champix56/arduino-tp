@@ -13,8 +13,8 @@ cahier de tp pour le cours arduino
 - 1x potentiomètre linéaire
 - 1x thermistance *(103)* 1k&ohm;
 - LCD 16x2 ou 20x4 controllé par HD44780
+- Module I&sup2;C RTC DS1307
   
-
 # Arduino_tp_list
 
 # Projet 0
@@ -949,3 +949,121 @@ fichier fritzing : projets/tp6a/projet6a.fzz
     [https://www.arduino.cc/reference/en/libraries/liquidcrystal/write/](https://www.arduino.cc/reference/en/libraries/liquidcrystal/write/)
 
 ----------
+
+# Projet 7
+
+Découverte du protocole I&sup2;C
+Protocole en bus supportant jusqu'a 127 composants sur le bus.
+Ce protocole communique grâce à un système d'adresse de composants sur le bus et est cadencé par une horloge pour synchroniser les échanges entre les composants *esclave* et le composant *maitre*
+
+![protocole I&usup2;C](img/i2c.png)
+
+découverte de sensor I&sup2; avec librairie
+
+## 7. Enoncé
+
+- Création d'une horloge affichée sur écran LCD grâce au "Real Time Clock" RTC DS1307, possédant une pile pour la persistance de la valeur *temps*
+
+- pour la découverte des adresses de composants disponibles nous utiliserons l'exemple de *wire* **i2c_scanner.ino**
+
+N.B.: pensez à mettre à l'heure le composants avant usage
+## 7.1. Composants
+
+- Arduino UNO
+- RTC DS1307
+- 2x Résistances 1K&ohm;
+  
+## 7.2. Code
+
+### 7.2.a. Mise à l'heure du composant à partir d'infos du compilateur
+
+~~~c
+  tmElements_t tm;
+  void setup(){
+    Serial.begin(9600);
+    // Récupération des valeurs du compilateur
+    if (getDate(__DATE__) && getTime(__TIME__)) {
+      // Ecriture sur le composant
+      if (!RTC.write(tm)) {
+        Serial.println("erreur");
+      }
+    }
+  }
+~~~
+
+### 7.2.b. Lecture de l'heure
+
+~~~c
+//librairie i2C
+#include <Wire.h>
+//structure de gestion de temps
+#include <TimeLib.h>
+//librairie d'accès au RTC
+#include <DS1307RTC.h>
+
+
+// initialisation de la librairie LCD
+#include <LiquidCrystal.h>
+const int rs = 12, en = 11, d4 = 7, d5 = 6, d6 = 5, d7 = 4;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+
+void setup() {
+  Serial.begin(9600);
+  lcd.begin(16, 2);
+  lcd.println("DS1307RTC Read Test");
+}
+
+void loop() {
+  tmElements_t tm;
+  lcd.setCursor(1,0);
+  lcd.print("                ");
+  lcd.setCursor(1,0);
+  if (RTC.read(tm)) {
+    Serial.print("Ok, Time");
+    print2digits(tm.Hour);
+    lcd.print(':');
+    print2digits(tm.Minute);
+    lcd.print(':');
+    print2digits(tm.Second);
+    lcd.print(", Date (D/M/Y) = ");
+    lcd.print(tm.Day);
+    lcd.print('/');
+    lcd.print(tm.Month);
+    Serial.write('/');
+    lcd.print(tmYearToCalendar(tm.Year));
+  } else {
+    if (RTC.chipPresent()) {
+      Serial.println("The DS1307 is stopped.  Please run the SetTime");
+      lcd.print("erreur date");
+    } else {
+      Serial.println("DS1307 read error!  Please check the circuitry.");
+      lcd.print("erreur lecture");
+    }
+  }
+  delay(1000);
+}
+
+void print2digits(int number) {
+    
+  if (number >= 0 && number < 10) {
+    lcd.print("0");
+  }
+  
+  lcd.print(number);
+}
+~~~
+
+### 7.2.1. RTC.**read(*timeStruct*)**  RTC.**write(*timeStruct*)**
+
+Lecture / écriture du contenu d'une structure de temps.
+
+- Retour : booléen de la réussite de la lecture / écriture
+
+- *timeStruct* : structure tmElements_t contenant l'heure déjà assemblée
+
+### 7.2.2. RTC.**chipPresent()**
+
+test de présence du composant à l'adresse prévue (0x77)
+
+- Retour : booléen de l'état de présence
