@@ -1,49 +1,58 @@
+//librairie i2C
 #include <Wire.h>
+//structure de gestion de temps
 #include <TimeLib.h>
+//librairie d'accès au RTC
 #include <DS1307RTC.h>
+
+
+// initialisation de la librairie LCD
+#include <LiquidCrystal.h>
+const int rs = 12, en = 11, d4 = 7, d5 = 6, d6 = 5, d7 = 4;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
 
 void setup() {
   Serial.begin(9600);
-  while (!Serial) ; // wait for serial
-  delay(200);
-  Serial.println("DS1307RTC Read Test");
-  Serial.println("-------------------");
+  lcd.begin(16, 2);
+  lcd.println("DS1307RTC Read Test");
 }
 
 void loop() {
   tmElements_t tm;
-
+  lcd.setCursor(1,0);
+  lcd.print("                ");
+  lcd.setCursor(1,0);
   if (RTC.read(tm)) {
-    Serial.print("Ok, Time = ");
+    Serial.print("Ok, Time");
     print2digits(tm.Hour);
-    Serial.write(':');
+    lcd.print(':');
     print2digits(tm.Minute);
-    Serial.write(':');
+    lcd.print(':');
     print2digits(tm.Second);
-    Serial.print(", Date (D/M/Y) = ");
-    Serial.print(tm.Day);
+    lcd.print(", Date (D/M/Y) = ");
+    lcd.print(tm.Day);
+    lcd.print('/');
+    lcd.print(tm.Month);
     Serial.write('/');
-    Serial.print(tm.Month);
-    Serial.write('/');
-    Serial.print(tmYearToCalendar(tm.Year));
-    Serial.println();
+    lcd.print(tmYearToCalendar(tm.Year));
   } else {
     if (RTC.chipPresent()) {
       Serial.println("The DS1307 is stopped.  Please run the SetTime");
-      Serial.println("example to initialize the time and begin running.");
-      Serial.println();
+      lcd.print("erreur date");
     } else {
       Serial.println("DS1307 read error!  Please check the circuitry.");
-      Serial.println();
+      lcd.print("erreur lecture");
     }
-    delay(9000);
   }
   delay(1000);
 }
 
 void print2digits(int number) {
+    
   if (number >= 0 && number < 10) {
-    Serial.write('0');
+    lcd.print("0");
   }
-  Serial.print(number);
+  
+  lcd.print(number);
 }

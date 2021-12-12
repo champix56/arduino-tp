@@ -1,4 +1,5 @@
 # arduino-tp
+
 cahier de tp pour le cours arduino
 
 ## Composants necessaires
@@ -395,6 +396,7 @@ fichier fritzing : *projets/tp4/projet4.fzz*
     [https://www.arduino.cc/reference/en/language/functions/communication/serial/readstring/](https://www.arduino.cc/reference/en/language/functions/communication/serial/readstring/)
   
 ----------
+
 # Projet 4b
 
 Découverte de la liaison série *HardwareSerial*.
@@ -490,6 +492,7 @@ fichier fritzing : *projets/tp4b/projet4b.fzz*
     [https://www.arduino.cc/reference/en/language/functions/communication/serial/serialevent/](https://www.arduino.cc/reference/en/language/functions/communication/serial/serialevent/)
   
 ----------
+
 # Projet 5
 
 Découverte du convertisseur Analogique / numérique (CAN/DAC) 10bits
@@ -566,6 +569,7 @@ fichier fritzing : *projets/tp5/projet5.fzz*
     [https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/](https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/)
 
 ----------
+
 # Projet 5a
 
 ## 5a. Enoncé
@@ -967,6 +971,7 @@ découverte de sensor I&sup2; avec librairie
 - pour la découverte des adresses de composants disponibles nous utiliserons l'exemple de *wire* **i2c_scanner.ino**
 
 N.B.: pensez à mettre à l'heure le composants avant usage
+
 ## 7.1. Composants
 
 - Arduino UNO
@@ -1067,3 +1072,15 @@ Lecture / écriture du contenu d'une structure de temps.
 test de présence du composant à l'adresse prévue (0x77)
 
 - Retour : booléen de l'état de présence
+
+### 7.3. Montage
+
+Fichier fritzing : projets/tp7/projet7.fzz
+
+![projet7.fzz](img/projet7.png)
+
+## 7.4. DOC
+
+- DS1307
+  
+[DS1307 doc](https://www.pjrc.com/teensy/td_libs_DS1307RTC.html)
