@@ -56,3 +56,4 @@ void print2digits(int number) {
   
   lcd.print(number);
 }
+
